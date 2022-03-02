@@ -26,7 +26,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        guard let url = URL(string: "https://www.apple.com") else {
+        guard let url = URL(string: "https://www.saucedemo.com") else {
             return
         }
         
