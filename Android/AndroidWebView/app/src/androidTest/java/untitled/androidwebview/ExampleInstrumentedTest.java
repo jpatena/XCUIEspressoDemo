@@ -1,8 +1,10 @@
 package untitled.androidwebview;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import android.content.Context;
@@ -29,15 +31,17 @@ import static org.junit.Assert.*;
 @LargeTest
 public class ExampleInstrumentedTest {
 
-    @Rule
-    public ActivityScenarioRule<MainActivity> activityRule =
-            new ActivityScenarioRule<MainActivity>(MainActivity.class);
+
 
     @Test
     public void testLaunch() {
         // Context of the app under test.
         //Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         onView(withText("AndroidWebView")).check(matches(isDisplayed()));
+        onView(withId(R.id.webview))
+                .perform(click())
+                .check(matches(isDisplayed()));
         //assertEquals("untitled.androidwebview", appContext.getPackageName());
+
     }
 }
