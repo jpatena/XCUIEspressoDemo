@@ -1,14 +1,14 @@
 package untitled.androidwebview
 
-import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.web.sugar.Web.onWebView
-import androidx.test.espresso.web.webdriver.DriverAtoms
 import androidx.test.espresso.web.webdriver.DriverAtoms.findElement
-import androidx.test.espresso.web.webdriver.DriverAtoms.webClick
 import androidx.test.espresso.web.webdriver.Locator
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import androidx.test.uiautomator.*
+import junit.framework.Assert.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,14 +26,45 @@ class MainActivityTest {
     }
 
     @Test
-    fun test() {
-        onWebView()
-                .withElement(findElement(Locator.ID, "user-name"))
-                .perform(webClick())
-                .perform(DriverAtoms.webKeys("standard_user"))
-                .withElement(findElement(Locator.ID, "password"))
-                .perform(webClick())
-                .perform(DriverAtoms.webKeys("secret_sauce"))
+    fun testLoginValidCredentials() {
 
+        val instr = InstrumentationRegistry.getInstrumentation()
+        val device = UiDevice.getInstance(instr)
+
+        onWebView().forceJavascriptEnabled()
+        Thread.sleep(5000)
+        device.findObject(UiSelector().resourceId("user-name")).click()
+        device.findObject(UiSelector().resourceId("user-name")).setText("standard_user")
+        device.findObject(UiSelector().resourceId("password")).click()
+        device.findObject(UiSelector().resourceId("password")).setText("secret_sauce")
+        device.findObject(UiSelector().resourceId("login-button")).click()
+        Thread.sleep(5000)
+
+        try {
+            onWebView().withElement(findElement(Locator.ID, "inventory_container"))
+        } catch (notExist: RuntimeException) {
+            fail()
+        }
+    }
+
+    @Test
+    fun testLoginInvalidCredentials() {
+
+        val instr = InstrumentationRegistry.getInstrumentation()
+        val device = UiDevice.getInstance(instr)
+
+        onWebView().forceJavascriptEnabled()
+        Thread.sleep(5000)
+        device.findObject(UiSelector().resourceId("user-name")).click()
+        device.findObject(UiSelector().resourceId("user-name")).setText("standard_user")
+        device.findObject(UiSelector().resourceId("password")).click()
+        device.findObject(UiSelector().resourceId("password")).setText("wrong_sauce")
+        device.findObject(UiSelector().resourceId("login-button")).click()
+        Thread.sleep(5000)
+
+        try {
+            onWebView().withElement(findElement(Locator.ID, "inventory_container"))
+            fail()
+        } catch (notExist: RuntimeException) {}
     }
 }
